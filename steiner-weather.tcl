@@ -50,15 +50,15 @@ namespace eval steiner {
 				{if { [catch { set $nodeName [[lindex [$nodeList selectNodes /current_observation/$nodeName/text()] 0] data] } err] } { set $nodeName "No Report"; } }
 			if {($city == "No Report") || ($latitude == "No Report") || ($longitude == "No Report") || ($temp_f == "No Report")} { error "Location not found"}
 			set latitude [roundnum $latitude 2];set longitude [roundnum $longitude 2]
-			if {$latitude < 0} { set latitude "[expr {abs($latitude)}]°S" } else { append latitude "°N" }
-			if {$longitude < 0} { set longitude "[expr {abs($longitude)}]°W" } else { append longitude "°E" }
+			if {$latitude < 0} { set latitude "[expr {abs($latitude)}]\u00B0S" } else { append latitude "\u00B0N" }
+			if {$longitude < 0} { set longitude "[expr {abs($longitude)}]\u00B0W" } else { append longitude "\u00B0E" }
 			if {$wind_mph < 0} { set wind_mph 0 }
 			if {$zip > 0} { set zipcode " ($zip)" } else { set zipcode "" }
 
 			if {$action == "weather"} {
 				if {[isnumber $wind_mph]} { set wind_kph [expr round($wind_mph * 1.6)] }
-				if {$heat_index_c == "NA"} { set heat_index "" } else { set heat_index " \002\Heat Index\002: $heat_index_f°F/$heat_index_c°C" }
-				if {$windchill_c == "NA"} { set wind_chill "" } else { set wind_chill " \002\Wind Chill\002: $windchill_f°F/$windchill_c°C" }
+				if {$heat_index_c == "NA"} { set heat_index "" } else { set heat_index " \002\Heat Index\002: $heat_index_f\u00B0F/$heat_index_c\u00B0C" }
+				if {$windchill_c == "NA"} { set wind_chill "" } else { set wind_chill " \002\Wind Chill\002: $windchill_f\u00B0F/$windchill_c\u00B0C" }
 				set current [subst [regsub -all {\w+} $weather {[string totitle \0]}]]
 				set alert "";set warnings ""
 				if {$zip > 0} {
@@ -73,7 +73,7 @@ namespace eval steiner {
 
 				set tokens [list %alert% "$alert" %city% "$city" %current% "$current" %heat_index% "$heat_index" %humidity% "$relative_humidity"\
 					%latitude% "$latitude" %local_time% "$local_time" %location% "\002$city, $state_name$zipcode (\002$latitude $longitude\002)\002"\
-					%longitude% "$longitude" %state_name% "$state_name" %temp_c% "$temp_c°C" %temp_f% "$temp_f°F" %wind_chill% "$wind_chill"\
+					%longitude% "$longitude" %state_name% "$state_name" %temp_c% "$temp_c\u00B0C" %temp_f% "$temp_f\u00B0F" %wind_chill% "$wind_chill"\
 					%wind_direction% "$wind_dir" %wind_kph% "$wind_kph\kph" %wind_mph% "$wind_mph\mph" %zipcode% "$zipcode" ]
 				dict set steiner::weather::cache $location current output [string map $tokens $steiner::settings::weather::output_format]
 				dict set steiner::weather::cache $location current time [unixtime]
